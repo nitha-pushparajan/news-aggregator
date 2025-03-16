@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
-import DatePicker from "react-datepicker";
 import { useDispatch, useSelector } from 'react-redux';
-import Select, {MultiValue} from 'react-select';
+import {MultiValue} from 'react-select';
 import { Source } from 'src/interfaces/common.types';
 import { NewsGrid } from './../components/organisms/newsGrid';
-import SourceButtons from './../components/molecules/sourceButtons/sourceButtons';
-import SearchInput from './../components/atoms/searchInput/searchInput';
+import { NewsFilter } from './../components/organisms/newsFilter';
+import { Title } from './../components/atoms/title';
 import { RootState, AppDispatch } from './../store';
-import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
+import { NEWSFILTERTYPE } from './../lib/contants';
 import { fetchNews, setFilters } from './../store/newsSlice';
 
 import './../App.css'
@@ -29,10 +28,6 @@ const Home = () => {
     ...new Set(news.map((newsItem) => newsItem.category))
   ];
 
-  const categoriesOptions =
-    categories.map((category) => { return { 'label': category, 'value': category } });
-
-
   const handleItemClick = (newsSources: Source[]) => {
     dispatch(setFilters({...filters, sources: newsSources}));
   }
@@ -44,38 +39,21 @@ const Home = () => {
   const newsData = filters.category.length > 0 ?
     news.filter((newsItem) => filters.category.filter((item) => newsItem.category === item.value).length > 0) : news;
 
-  const handleChange = (selected: MultiValue<{ value: string, label: string }>) => {
+  const handleCategoryChange = (selected: MultiValue<{ value: string, label: string }>) => {
     dispatch(setFilters({...filters, category: selected}));
   };
-  const date = filters.date ? new Date(filters.date): null;
 
   return (
     <>
-      <h1 className='text-[35px] font-semibold text-[#3d9939] my-3 text-center' >News Articles</h1>
-      <SourceButtons onSelection={handleItemClick} items={NEWS_SOURCES} selectedItems={filters.sources} />
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 w-full items-center justify-center my-10'>
-        <div className="flex flex-wrap md:flex-nowrap gap-2">
-          <DatePicker selected={date} onChange={onDateChange} placeholderText="Select date" dateFormat="yyyy-MM-dd" />
-          <div className='flex-grow'>
-            <SearchInput onSearch={onSearch} />
-          </div>
-        </div>
-        <Select
-          isMulti
-          name="Filter result by categories"
-          options={categoriesOptions}
-          value={filters.category}
-          onChange={handleChange}
-          className="react-select-container flex-grow"
-          placeholder="Select catgoeries..."
-          styles={{
-            placeholder: (provided) => ({
-              ...provided,
-              fontSize: '14px',
-            }),
-          }}
-        />
-      </div>
+      <Title text="News Items"/>
+      <NewsFilter
+        handleItemClick={handleItemClick}
+        onDateChange={onDateChange}
+        onCategoryChange={handleCategoryChange}
+        categories={categories}
+        onSearch={onSearch}
+        filters={filters}
+      />
       <NewsGrid
         news={newsData}
         loading={loading}

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import Select, { MultiValue } from 'react-select';
-import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
-import { SourceButtons } from './../components/molecules/sourceButtons';
+import { MultiValue } from 'react-select';
+import { NEWSFILTERTYPE } from './../lib/contants';
+import { Title } from './../components/atoms/title';
+import { PersonalFilter } from './../components/organisms/personalFilter';
 import { Source } from './../interfaces/common.types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from './../store';
@@ -16,14 +17,9 @@ const Personal = () => {
     ...new Set(news.map((newsItem) => newsItem.category))
   ];
 
-  const categoriesOptions =
-    categories.map((category) => { return { 'label': category, 'value': category } });
-
   const authors = [
     ...new Set(news.map((newsItem) => newsItem.author))
   ];
-
-  const authorOptions = authors.map((author) => { return { 'label': author, 'value': author } });
 
   const filteredNews = news.filter((newsItem) => {
     const categoryMatch = personalisedFilters.category.length === 0 ||
@@ -56,56 +52,23 @@ const Personal = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center space-x-2">
-        <h1 className="text-[35px] font-semibold text-[#3d9939] my-3 text-center">Your Personalised NewsFeed</h1>
-      </div>
-      {isEdit && <div className='mb-8'>
-        <div className=" w-full p-2">
-          <h2 className="text-2xl font-semibold text-center text-gray-800">
-            Personalize Your Newsfeed by updating the below filters
-          </h2>
-        </div>
-        <SourceButtons onSelection={handleItemClick} items={NEWS_SOURCES} selectedItems={personalisedFilters.sources} />
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-2 w-full'>
-          <Select
-            isMulti
-            name="Filter result by categories"
-            options={categoriesOptions}
-            value={personalisedFilters.category}
-            onChange={handleCategoryChange}
-            className="react-select-container"
-            placeholder="Select catgoeries..."
-            styles={{
-              placeholder: (provided) => ({
-                ...provided,
-                fontSize: '14px',
-              }),
-            }}
-          />
-          <Select
-            isMulti
-            name="Filter result by authors"
-            options={authorOptions}
-            value={personalisedFilters.authors}
-            onChange={handleAuthorChange}
-            className="react-select-container"
-            placeholder="Select catgoeries..."
-            styles={{
-              placeholder: (provided) => ({
-                ...provided,
-                fontSize: '14px',
-              }),
-            }}
-          />
-        </div>
-      </div>
+      <Title text="Your Personalised News Feed" />
+      {isEdit &&
+        <PersonalFilter
+          handleItemClick={handleItemClick}
+          onCategoryChange={handleCategoryChange}
+          categories={categories}
+          onAuthorsChange={handleAuthorChange}
+          authors={authors}
+          filters={personalisedFilters}
+        />
       }
       <div className='flex justify-end p-4'>
         <button
           onClick={toggleFilters}
           className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
         >
-          {isEdit ? 'Close': 'Update'} Filters
+          {isEdit ? 'Close' : 'Edit'} Filters
         </button>
       </div>
       <NewsGrid

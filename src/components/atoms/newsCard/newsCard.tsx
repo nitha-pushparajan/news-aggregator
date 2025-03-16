@@ -10,7 +10,7 @@ const NewsCard: FC<NewsCardProps> = ({ news }) => {
       data-testid="news-card"
       className="group relative bg-white p-5 rounded-[5px] cursor-pointer h-full flex flex-col"
     >
-      <div className="relative w-full pb-[70%]">
+      <div className="relative w-full pb-[70%] mb-4">
         <img alt={altText} src={news.imgSrc} className="absolute w-full h-full rounded-lg object-cover" />
       </div>
       <div className="mb-[15px]">

@@ -11,7 +11,8 @@ const fetchNewsFromAPI = async (source: Source, params: Params) => {
     return formatNews(response.data.response?.docs || response.data.articles || response.data.response?.results);
   } catch (error) {
     console.error("API request failed:", error);
-    return null; // Return null if request fails, instead of rejecting the promise
+    // Return null if request fails, instead of rejecting the promise
+    return null;
   }
 }
 
@@ -33,13 +34,13 @@ const buildQueryParams = (source: Source, params: Params): Record<string, string
     
     // Date field handling based on source
     if (source === SOURCE_NYT) {
-      queryParams.begin_date = formattedDate;  // New York Times expects from date in YYYY-MM-DD
+      queryParams.begin_date = formattedDate;
       queryParams.end_date = formattedDate;
     } else if (source === SOURCE_NEWSAPI) {
-      queryParams.from = formattedDate;  // NewsAPI expects from date in YYYY-MM-DD
+      queryParams.from = formattedDate;
       queryParams.to = formattedDate;
     } else if (source === SOURCE_GUARDIAN) {
-      queryParams['from-date'] = formattedDate;  // The Guardian expects from-date in YYYY-MM-DD
+      queryParams['from-date'] = formattedDate;
       queryParams['to-date'] = formattedDate;
     }
   }
@@ -75,13 +76,11 @@ export const getPopularNews = async (params: Params) => {
   }
 };
 
-// Format the news items
+// Format the news items from different sources
 const formatNews = (news: any) => {
   return news.map((newsItem: any) => ({
     title: newsItem.title || newsItem.webTitle || newsItem.headline?.main,
     description: newsItem.description || newsItem.fields?.trailText || newsItem.lead_paragraph,
-    // url: newsItem.url || newsItem.webUrl || newsItem.web_url,
-    publishedAt: newsItem.publishedAt || newsItem.webPublicationDate || newsItem.pub_date,
     author: newsItem?.author || newsItem?.fields?.byline || newsItem?.byline?.original || 'No Author',
     category: newsItem?.sectionName || newsItem?.section_name || 'General',
     imgSrc: newsItem?.urlToImage || newsItem?.fields?.thumbnail || (newsItem.multimedia?.[0]?.url ?'https://www.nytimes.com/' + newsItem.multimedia?.[0]?.url: '/public/not-available.svg'),
