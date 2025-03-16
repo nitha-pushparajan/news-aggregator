@@ -1,0 +1,103 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from 'axios';
+
+export interface Params {
+  query?: string;  // For search queries
+  date?: string | null;
+  sources: Source[];
+}
+
+const urls = {
+  nyt: 'https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=ELOcWDw61Kg4rsOghjlig4kuovmsCea1&facet_fields=source&facet=true',
+  newsapi: 'https://newsapi.org/v2/everything?sources=the-verge&apiKey=5d535bc0584d4a40a21ea9bd15dc1a84',
+  guardian: 'https://content.guardianapis.com/search?api-key=fa9e1b21-b86d-41e2-a0b8-a1127e508c83&show-fields=all'
+} as const;
+
+type Source = keyof typeof urls;
+
+// Helper function to handle API requests
+const fetchNewsFromAPI = async (source: Source, params: Params) => {
+  try {
+    const url = urls[source];
+    const response = await axios.get(url, { params: buildQueryParams(source, params) });
+    return formatNews(response.data.response?.docs || response.data.articles || response.data.response?.results);
+  } catch (error) {
+    console.error("API request failed:", error);
+    return null; // Return null if request fails, instead of rejecting the promise
+  }
+}
+
+const formatDate = (date: string): string => {
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+const buildQueryParams = (source: Source, params: Params): Record<string, string > => {
+  const queryParams: Record<string, string> = {};
+  
+  if (params.query) queryParams.q = params.query;
+  
+  if (params.date) {
+    const formattedDate = formatDate(params.date);
+    
+    // Date field handling based on source
+    if (source === 'nyt') {
+      queryParams.begin_date = formattedDate;  // New York Times expects from date in YYYY-MM-DD
+      queryParams.end_date = formattedDate;
+    } else if (source === 'newsapi') {
+      queryParams.from = formattedDate;  // NewsAPI expects from date in YYYY-MM-DD
+      queryParams.to = formattedDate;
+    } else if (source === 'guardian') {
+      queryParams['from-date'] = formattedDate;  // The Guardian expects from-date in YYYY-MM-DD
+      queryParams['to-date'] = formattedDate;
+    }
+  }
+  
+  return queryParams;
+}
+
+
+// Main function to get popular news
+export const getPopularNews = async (params: Params) => {
+  const selectedSources = params.sources;
+
+  const fetchPromises = selectedSources.length === 0 
+    ? [fetchNewsFromAPI('nyt', params), fetchNewsFromAPI('newsapi', params), fetchNewsFromAPI('guardian', params)]
+    : selectedSources.map(source => {
+      return fetchNewsFromAPI(source, params)
+      }).filter(Boolean);
+
+  try {
+    const results = await Promise.allSettled(fetchPromises);
+
+    // Filter out failed results and return successful ones
+    const successfulResults = results
+      .filter(result => result.status === 'fulfilled' && result.value !== null)
+      .map(result => (result as PromiseFulfilledResult<any>).value);
+
+    if (successfulResults.length > 0) {
+      return successfulResults.flat(); // Flatten if multiple results
+    } else {
+      return { error: 'All news sources failed to fetch data' };
+    }
+  } catch (error) {
+    console.error('Unexpected error while fetching news:', error);
+    return { error: 'Unexpected error occurred' };
+  }
+};
+
+// Format the news items
+const formatNews = (news: any) => {
+  return news.map((newsItem: any) => ({
+    title: newsItem.title || newsItem.webTitle || newsItem.headline?.main,
+    description: newsItem.description || newsItem.fields?.trailText || newsItem.lead_paragraph,
+    // url: newsItem.url || newsItem.webUrl || newsItem.web_url,
+    publishedAt: newsItem.publishedAt || newsItem.webPublicationDate || newsItem.pub_date,
+    author: newsItem?.author || newsItem?.fields?.byline || newsItem?.byline?.original || 'No Author',
+    category: newsItem?.sectionName || newsItem?.section_name || 'General',
+    imgSrc: newsItem?.urlToImage || newsItem?.fields?.thumbnail || (newsItem.multimedia?.[0]?.url ?'https://www.nytimes.com/' + newsItem.multimedia?.[0]?.url: '/public/not-available.svg'),
+  }));
+}

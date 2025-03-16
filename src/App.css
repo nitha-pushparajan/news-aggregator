@@ -1,0 +1,27 @@
+.react-datepicker__input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  min-height: 38px;
+  border-radius: .25em;
+}
+
+.react-datepicker__input-container input {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border-radius: .25em;
+  padding: 10px;
+  outline: none;
+  font-size: 14px;
+}
+
+.react-datepicker__input {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e2e8f0; /* Tailwind border color */
+  border-radius: 0.375rem; /* Tailwind rounded-md */
+}
+
+body {
+  font-family: sans-serif;  /* Example: Roboto font */
+}
