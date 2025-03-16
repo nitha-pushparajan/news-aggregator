@@ -63,10 +63,10 @@ export const newsSlice = createSlice({
   initialState,
   reducers: {
     setFilters: (state, action: PayloadAction<Filters>) => {
-      state.filters = action.payload;
+      state.filters = {...action.payload, category: [...action.payload.category]};
     },
     setPersonalisedFilters: (state, action: PayloadAction<PersonalisedFilters>) => {
-      state.personalisedFilters = {...action.payload, isPersonalised: true};
+      state.personalisedFilters = {...action.payload, isPersonalised: true, category: [...action.payload.category], authors: [...action.payload.authors]};
     }
   },
   extraReducers: (builder) => {

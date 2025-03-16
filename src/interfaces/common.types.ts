@@ -1,4 +1,6 @@
 import {SOURCE_NYT, SOURCE_NEWSAPI, SOURCE_GUARDIAN, NEWSFILTERTYPE} from './../lib/contants';
+import {MultiValue} from 'react-select';
+
 
 export type Source = typeof SOURCE_NYT | typeof SOURCE_NEWSAPI | typeof SOURCE_GUARDIAN;
 
@@ -13,14 +15,14 @@ export interface Filters {
     query?: string;
     date?: string | null;
     sources: Source[];
-    category: { value: string, label: string }[];
+    category: MultiValue<{ value: string, label: string }>;
   }
   
   export interface PersonalisedFilters {
     isPersonalised: boolean;
     sources: Source[];
-    category: { value: string, label: string }[];
-    authors: { value: string, label: string }[];
+    category: MultiValue<{ value: string, label: string }>;
+    authors: MultiValue<{ value: string, label: string }>;
   }
 
   export type NewsProps = {

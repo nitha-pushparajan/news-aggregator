@@ -1,4 +1,4 @@
-import { NewsProps } from '../../../components/molecules/newsCard/newsCard.types';
+import { NewsProps } from './../../../interfaces/common.types';
 
 export interface NewsGridProps {
   news: NewsProps[];

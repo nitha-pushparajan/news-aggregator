@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import Select from 'react-select';
+import { useEffect, useState } from 'react';
+import Select, { MultiValue } from 'react-select';
 import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
 import { SourceButtons } from './../components/molecules/sourceButtons';
 import { Source } from './../interfaces/common.types';
@@ -11,7 +11,7 @@ import { NewsGrid } from './../components/organisms/newsGrid';
 const Personal = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { news, loading, error, personalisedFilters } = useSelector((state: RootState) => state.news);
-  
+  const [isEdit, setIsEdit] = useState<boolean>(!personalisedFilters.isPersonalised)
   const categories = [
     ...new Set(news.map((newsItem) => newsItem.category))
   ];
@@ -26,10 +26,10 @@ const Personal = () => {
   const authorOptions = authors.map((author) => { return { 'label': author, 'value': author } });
 
   const filteredNews = news.filter((newsItem) => {
-    const categoryMatch = personalisedFilters.category.length === 0 || 
-                          personalisedFilters.category.some((item) => newsItem.category === item.value);
-    const authorMatch = personalisedFilters.authors.length === 0 || 
-                        personalisedFilters.authors.some((item) => newsItem.author === item.value);
+    const categoryMatch = personalisedFilters.category.length === 0 ||
+      personalisedFilters.category.some((item) => newsItem.category === item.value);
+    const authorMatch = personalisedFilters.authors.length === 0 ||
+      personalisedFilters.authors.some((item) => newsItem.author === item.value);
 
     return categoryMatch && authorMatch;
   });
@@ -42,26 +42,29 @@ const Personal = () => {
     dispatch(fetchNews(NEWSFILTERTYPE.PERSONAL));
   }, [personalisedFilters.sources, dispatch]);
 
-  const handleCategoryChange = (selected: { value: string, label: string }[]) => {
+  const handleCategoryChange = (selected: MultiValue<{ value: string, label: string }>) => {
     dispatch(setPersonalisedFilters({ ...personalisedFilters, category: selected }))
   }
 
-  const handleAuthorChange = (selected: { value: string, label: string }[]) => {
+  const handleAuthorChange = (selected: MultiValue<{ value: string, label: string }>) => {
     dispatch(setPersonalisedFilters({ ...personalisedFilters, authors: selected }))
+  }
+
+  const toggleFilters = () => {
+    setIsEdit(!isEdit);
   }
 
   return (
     <div>
       <div className="flex items-center justify-center space-x-2">
-        <h1 className="text-[35px] font-semibold text-[#3d9939] my-3">Your Personalised NewsFeed</h1>
+        <h1 className="text-[35px] font-semibold text-[#3d9939] my-3 text-center">Your Personalised NewsFeed</h1>
       </div>
-      <div className=" w-full p-2">
-        <h2 className="text-2xl font-semibold text-center text-gray-800">
-          Personalize Your Newsfeed by updating the below filters
-        </h2>
-      </div>
-
-      {<div className='mb-8'>
+      {isEdit && <div className='mb-8'>
+        <div className=" w-full p-2">
+          <h2 className="text-2xl font-semibold text-center text-gray-800">
+            Personalize Your Newsfeed by updating the below filters
+          </h2>
+        </div>
         <SourceButtons onSelection={handleItemClick} items={NEWS_SOURCES} selectedItems={personalisedFilters.sources} />
         <div className='grid grid-cols-1 md:grid-cols-2 gap-2 w-full'>
           <Select
@@ -97,6 +100,14 @@ const Personal = () => {
         </div>
       </div>
       }
+      <div className='flex justify-end p-4'>
+        <button
+          onClick={toggleFilters}
+          className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          {isEdit ? 'Close': 'Update'} Filters
+        </button>
+      </div>
       <NewsGrid
         news={filteredNews}
         loading={loading}

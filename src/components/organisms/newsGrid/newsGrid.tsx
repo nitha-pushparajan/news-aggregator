@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { NewsCard } from '../../molecules/newsCard';
+import { NewsCard } from '../../atoms/newsCard';
 import { NewsGridProps } from './newsGrid.types';
 import NewsCardLoader from '../../../components/atoms/loader/newsCardLoader';
 

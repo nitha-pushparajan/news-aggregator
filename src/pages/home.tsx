@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import DatePicker from "react-datepicker";
+import { useDispatch, useSelector } from 'react-redux';
+import Select, {MultiValue} from 'react-select';
+import { Source } from 'src/interfaces/common.types';
 import { NewsGrid } from './../components/organisms/newsGrid';
 import SourceButtons from './../components/molecules/sourceButtons/sourceButtons';
 import SearchInput from './../components/atoms/searchInput/searchInput';
-import { useDispatch, useSelector } from 'react-redux';
-import Select from 'react-select';
 import { RootState, AppDispatch } from './../store';
-import "react-datepicker/dist/react-datepicker.css";
-
-import { fetchNews, setFilters } from './../store/newsSlice';
-import './../App.css'
-import { Source } from 'src/interfaces/common.types';
 import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
+import { fetchNews, setFilters } from './../store/newsSlice';
+
+import './../App.css'
+import "react-datepicker/dist/react-datepicker.css";
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +44,7 @@ const Home = () => {
   const newsData = filters.category.length > 0 ?
     news.filter((newsItem) => filters.category.filter((item) => newsItem.category === item.value).length > 0) : news;
 
-  const handleChange = (selected: { value: string, label: string }[]) => {
+  const handleChange = (selected: MultiValue<{ value: string, label: string }>) => {
     dispatch(setFilters({...filters, category: selected}));
   };
   const date = filters.date ? new Date(filters.date): null;
