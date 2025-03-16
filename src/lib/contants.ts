@@ -1,4 +1,5 @@
 import { NewsSource } from "src/interfaces/common.types";
+
 const NYT_API_KEY = import.meta.env.VITE_API_KEY_NYT;
 const NEWS_API_KEY = import.meta.env.VITE_API_KEY_NEWSAPI;
 const GUARDIAN_API_KEY = import.meta.env.VITE_API_KEY_GUARDIAN;

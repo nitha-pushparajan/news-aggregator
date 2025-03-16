@@ -3,7 +3,7 @@ import axios from 'axios';
 import {Params, Source} from './../interfaces/common.types';
 import { URLS,SOURCE_NYT, SOURCE_NEWSAPI, SOURCE_GUARDIAN } from './contants';
 
-// Helper function to handle API requests
+// function to handle API requests
 const fetchNewsFromAPI = async (source: Source, params: Params) => {
   try {
     const url = URLS[source];
@@ -31,7 +31,6 @@ const buildQueryParams = (source: Source, params: Params): Record<string, string
   
   if (params.date) {
     const formattedDate = formatDate(params.date);
-    
     // Date field handling based on source
     if (source === SOURCE_NYT) {
       queryParams.begin_date = formattedDate;
@@ -83,6 +82,6 @@ const formatNews = (news: any) => {
     description: newsItem.description || newsItem.fields?.trailText || newsItem.lead_paragraph,
     author: newsItem?.author || newsItem?.fields?.byline || newsItem?.byline?.original || 'No Author',
     category: newsItem?.sectionName || newsItem?.section_name || 'General',
-    imgSrc: newsItem?.urlToImage || newsItem?.fields?.thumbnail || (newsItem.multimedia?.[0]?.url ?'https://www.nytimes.com/' + newsItem.multimedia?.[0]?.url: '/public/not-available.svg'),
+    imgSrc: newsItem?.urlToImage || newsItem?.fields?.thumbnail || (newsItem.multimedia?.[0]?.url ?'https://www.nytimes.com/' + newsItem.multimedia?.[0]?.url: '') || '/public/not-available.svg',
   }));
 }

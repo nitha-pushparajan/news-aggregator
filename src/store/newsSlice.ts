@@ -38,26 +38,25 @@ export const fetchNews = createAsyncThunk<
 
     // Select filters based on the newsType ('news' or 'personal')
     if (newsType === NEWSFILTERTYPE.NEWS) {
-      filters = state.news.filters;  // Home news filters
+      filters = state.news.filters;
     } else {
-      filters = state.news.personalisedFilters;  // Personalized news filters
+      filters = state.news.personalisedFilters;
     }
     try {
-      const response = await getPopularNews(filters);  // Call your API function
-      // Check if the response is valid
+      const response = await getPopularNews(filters);
       if ('error' in response) {
         // If the response contains an error object, reject it
         return thunkAPI.rejectWithValue({ error: response.error });
       }
       return response as NewsProps[];
     } catch {
-      // If an error occurs during the API request, reject with a custom error message
+      // If an error occurs during the API request, reject
       return thunkAPI.rejectWithValue({ error: 'Unexpected error occurred while fetching news' });
     }
   }
 );
 
-// Create the news slice
+// News slice
 export const newsSlice = createSlice({
   name: 'news',
   initialState,
@@ -86,8 +85,6 @@ export const newsSlice = createSlice({
   },
 });
 
-// Export actions from the slice
 export const { setPersonalisedFilters, setFilters } = newsSlice.actions;
 
-// Export the reducer to be included in the store
 export default newsSlice.reducer;
