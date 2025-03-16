@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getPopularNews } from './../lib/services';
 import { RootState } from './index';
 import { NewsState, NewsProps, Filters, NewsTYpe, PersonalisedFilters } from 'src/interfaces/common.types';
-import { NEWSFILTERTYPE } from 'src/lib/contants';
+import { NEWSFILTERTYPE } from './../lib/contants';
 
 const initialState: NewsState = {
   news: [],

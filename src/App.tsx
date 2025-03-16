@@ -6,7 +6,7 @@ import Personal from './pages/personal';
 
 function App() {
   return (
-    <div className="app bg-[#ede9e9]">
+    <div className="app bg-[#ede9e9] font-sans">
       <NavBar />
       <div className='mx-4'>
         <Routes>

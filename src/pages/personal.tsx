@@ -63,14 +63,14 @@ const Personal = () => {
 
       {<div className='mb-8'>
         <SourceButtons onSelection={handleItemClick} items={NEWS_SOURCES} selectedItems={personalisedFilters.sources} />
-        <div className='flex gap-2'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-2 w-full'>
           <Select
             isMulti
             name="Filter result by categories"
             options={categoriesOptions}
             value={personalisedFilters.category}
             onChange={handleCategoryChange}
-            className="react-select-container w-1/2"
+            className="react-select-container"
             placeholder="Select catgoeries..."
             styles={{
               placeholder: (provided) => ({
@@ -85,7 +85,7 @@ const Personal = () => {
             options={authorOptions}
             value={personalisedFilters.authors}
             onChange={handleAuthorChange}
-            className="react-select-container w-1/2"
+            className="react-select-container"
             placeholder="Select catgoeries..."
             styles={{
               placeholder: (provided) => ({

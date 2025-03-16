@@ -53,9 +53,13 @@ const Home = () => {
     <>
       <h1 className='text-[35px] font-semibold text-[#3d9939] my-3 text-center' >News Articles</h1>
       <SourceButtons onSelection={handleItemClick} items={NEWS_SOURCES} selectedItems={filters.sources} />
-      <div className='flex flex-wrap md:flex-nowrap gap-2 w-full items-center justify-center my-10'>
-        <DatePicker selected={date} onChange={onDateChange} placeholderText="Select date" dateFormat="yyyy-MM-dd" />
-        <SearchInput onSearch={onSearch} />
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 w-full items-center justify-center my-10'>
+        <div className="flex flex-wrap md:flex-nowrap gap-2">
+          <DatePicker selected={date} onChange={onDateChange} placeholderText="Select date" dateFormat="yyyy-MM-dd" />
+          <div className='flex-grow'>
+            <SearchInput onSearch={onSearch} />
+          </div>
+        </div>
         <Select
           isMulti
           name="Filter result by categories"

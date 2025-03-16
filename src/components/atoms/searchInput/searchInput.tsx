@@ -14,7 +14,7 @@ const SearchInput:FC<SearchInputProps> = ({onSearch}) => {
         onSearch(searchInput);
       }
 
-      return <form className="max-w-lg w-full items-center">
+      return <form className="w-full items-center">
         <div className="flex">
             <div className="relative w-full">
                 <input type="search" id="search-dropdown" value={searchInput} onChange={onChange} className="block p-2.5 h-[38px] w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-[.25em] border border-gray-300 outline-none" placeholder="Search News..." required />

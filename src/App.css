@@ -21,7 +21,3 @@
   border: 2px solid #e2e8f0; /* Tailwind border color */
   border-radius: 0.375rem; /* Tailwind rounded-md */
 }
-
-body {
-  font-family: sans-serif;  /* Example: Roboto font */
-}
