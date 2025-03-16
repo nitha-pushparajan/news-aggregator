@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { NewsCard } from '../../molecules/newsCard';
 import { NewsGridProps } from './newsGrid.types';
-import NewsCardLoader from '../../../components/molecules/loader/newsCardLoader';
+import NewsCardLoader from '../../../components/atoms/loader/newsCardLoader';
 
 const NewsGrid: FC<NewsGridProps> = ({ news = [], loading, error }) => {
   if (loading) {

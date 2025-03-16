@@ -1,34 +1,11 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getPopularNews } from './../lib/services';
 import { RootState } from './index';
-import { NewsProps } from 'src/components/molecules/newsCard/newsCard.types';
-import { Source } from 'src/interfaces/common.types';
+import { NewsState, NewsProps, Filters, NewsTYpe, PersonalisedFilters } from 'src/interfaces/common.types';
+import { NEWSFILTERTYPE } from 'src/lib/contants';
 
-// Define a type for the slice state
-interface NewsState {
-  news: NewsProps[];
-  // categories: string[];
-  filteredNews: NewsProps[];
-  loading: boolean;
-  error: string | null;
-  filters: {
-    query?: string;
-    date?: string | null;
-    sources: Source[];
-    category: any[];
-  },
-  personalisedFilters: {
-    isPersonalised: boolean;
-    sources: Source[];
-    category: any[];
-    authors: any[];
-  }
-}
-
-// Initial state
 const initialState: NewsState = {
   news: [],
-  // categories: [],
   filteredNews: [],
   loading: false,
   error: null,
@@ -47,11 +24,11 @@ const initialState: NewsState = {
 };
 
 export const fetchNews = createAsyncThunk<
-  NewsProps[], // The expected return type (on success)
-  'news' | 'personal',        // No arguments are passed to the thunk
+  NewsProps[],
+  NewsTYpe,
   {
     state: RootState;
-    rejectValue: { error: string }; // Custom error type
+    rejectValue: { error: string };
   }
 >(
   'news/fetchNews',
@@ -59,8 +36,8 @@ export const fetchNews = createAsyncThunk<
     const state = thunkAPI.getState();
     let filters;
 
-    // Select filters based on the newsType ('home' or 'personal')
-    if (newsType === 'news') {
+    // Select filters based on the newsType ('news' or 'personal')
+    if (newsType === NEWSFILTERTYPE.NEWS) {
       filters = state.news.filters;  // Home news filters
     } else {
       filters = state.news.personalisedFilters;  // Personalized news filters
@@ -85,13 +62,10 @@ export const newsSlice = createSlice({
   name: 'news',
   initialState,
   reducers: {
-    // setPersonalisedSource: (state, action: PayloadAction<Source[]>) => {
-    //   state.personalisedFilters.sources = action.payload
-    // },
-    setFilters: (state, action: PayloadAction<any>) => {
+    setFilters: (state, action: PayloadAction<Filters>) => {
       state.filters = action.payload;
     },
-    setPersonalisedFilters: (state, action: PayloadAction<any>) => {
+    setPersonalisedFilters: (state, action: PayloadAction<PersonalisedFilters>) => {
       state.personalisedFilters = {...action.payload, isPersonalised: true};
     }
   },
@@ -104,12 +78,6 @@ export const newsSlice = createSlice({
       .addCase(fetchNews.fulfilled, (state, action: PayloadAction<NewsProps[]>) => {
         state.loading = false;
         state.news = action.payload;
-
-        // Extract unique categories and set them in filteredNews
-        // const categories = [
-        //   ...new Set(action.payload.map((newsItem) => newsItem.category))
-        // ];
-        // state.categories = categories;
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.loading = false;

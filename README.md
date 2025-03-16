@@ -40,8 +40,9 @@ The Dockerfile defines the steps to build the Docker image for the application.
 ### Setup and Dockerization
 1. Clone the Repository:
 
-	git clone 
-	cd news-app
+	git clone https://github.com/nitha-pushparajan/news-aggregator.git
+
+	cd news-aggregator
 
 2. Install Docker:
 

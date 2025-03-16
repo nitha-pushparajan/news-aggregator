@@ -4,14 +4,14 @@ import { NewsGrid } from './../components/organisms/newsGrid';
 import SourceButtons from './../components/molecules/sourceButtons/sourceButtons';
 import SearchInput from './../components/atoms/searchInput/searchInput';
 import { useDispatch, useSelector } from 'react-redux';
-import Select, { MultiValue } from 'react-select';
+import Select from 'react-select';
 import { RootState, AppDispatch } from './../store';
 import "react-datepicker/dist/react-datepicker.css";
 
 import { fetchNews, setFilters } from './../store/newsSlice';
 import './../App.css'
 import { Source } from 'src/interfaces/common.types';
-import { NEWS_SOURCES } from './../lib/contants';
+import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
 
 const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,13 +38,13 @@ const Home = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchNews('news'));
+    dispatch(fetchNews(NEWSFILTERTYPE.NEWS));
   }, [filters.query, filters.date, filters.sources, dispatch]);
 
   const newsData = filters.category.length > 0 ?
     news.filter((newsItem) => filters.category.filter((item) => newsItem.category === item.value).length > 0) : news;
 
-  const handleChange = (selected: MultiValue<{ value: string, label: string }>) => {
+  const handleChange = (selected: { value: string, label: string }[]) => {
     dispatch(setFilters({...filters, category: selected}));
   };
   const date = filters.date ? new Date(filters.date): null;

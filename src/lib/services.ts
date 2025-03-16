@@ -1,24 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-
-export interface Params {
-  query?: string;  // For search queries
-  date?: string | null;
-  sources: Source[];
-}
-
-const urls = {
-  nyt: 'https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=ELOcWDw61Kg4rsOghjlig4kuovmsCea1&facet_fields=source&facet=true',
-  newsapi: 'https://newsapi.org/v2/everything?sources=the-verge&apiKey=5d535bc0584d4a40a21ea9bd15dc1a84',
-  guardian: 'https://content.guardianapis.com/search?api-key=fa9e1b21-b86d-41e2-a0b8-a1127e508c83&show-fields=all'
-} as const;
-
-type Source = keyof typeof urls;
+import {Params, Source} from './../interfaces/common.types';
+import { URLS,SOURCE_NYT, SOURCE_NEWSAPI, SOURCE_GUARDIAN } from './contants';
 
 // Helper function to handle API requests
 const fetchNewsFromAPI = async (source: Source, params: Params) => {
   try {
-    const url = urls[source];
+    const url = URLS[source];
     const response = await axios.get(url, { params: buildQueryParams(source, params) });
     return formatNews(response.data.response?.docs || response.data.articles || response.data.response?.results);
   } catch (error) {
@@ -44,13 +32,13 @@ const buildQueryParams = (source: Source, params: Params): Record<string, string
     const formattedDate = formatDate(params.date);
     
     // Date field handling based on source
-    if (source === 'nyt') {
+    if (source === SOURCE_NYT) {
       queryParams.begin_date = formattedDate;  // New York Times expects from date in YYYY-MM-DD
       queryParams.end_date = formattedDate;
-    } else if (source === 'newsapi') {
+    } else if (source === SOURCE_NEWSAPI) {
       queryParams.from = formattedDate;  // NewsAPI expects from date in YYYY-MM-DD
       queryParams.to = formattedDate;
-    } else if (source === 'guardian') {
+    } else if (source === SOURCE_GUARDIAN) {
       queryParams['from-date'] = formattedDate;  // The Guardian expects from-date in YYYY-MM-DD
       queryParams['to-date'] = formattedDate;
     }
@@ -59,13 +47,11 @@ const buildQueryParams = (source: Source, params: Params): Record<string, string
   return queryParams;
 }
 
-
-// Main function to get popular news
 export const getPopularNews = async (params: Params) => {
   const selectedSources = params.sources;
 
   const fetchPromises = selectedSources.length === 0 
-    ? [fetchNewsFromAPI('nyt', params), fetchNewsFromAPI('newsapi', params), fetchNewsFromAPI('guardian', params)]
+    ? [fetchNewsFromAPI(SOURCE_NYT, params), fetchNewsFromAPI(SOURCE_NEWSAPI, params), fetchNewsFromAPI(SOURCE_GUARDIAN, params)]
     : selectedSources.map(source => {
       return fetchNewsFromAPI(source, params)
       }).filter(Boolean);

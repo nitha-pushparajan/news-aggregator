@@ -1,13 +1,4 @@
-export type NewsProps = {
-  title: string;
-  description:string;
-  url: string;
-  source: string;
-  publishedAt: string;
-  author: string;
-  category: string;
-  imgSrc: string;
-};
+import { NewsProps } from './../../../interfaces/common.types';
 
 export interface NewsCardProps {
   news: NewsProps;

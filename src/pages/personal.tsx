@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import Select, { MultiValue } from 'react-select';
-import { NEWS_SOURCES } from './../lib/contants';
+import Select from 'react-select';
+import { NEWS_SOURCES, NEWSFILTERTYPE } from './../lib/contants';
 import { SourceButtons } from './../components/molecules/sourceButtons';
 import { Source } from './../interfaces/common.types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ const Personal = () => {
 
   const authorOptions = authors.map((author) => { return { 'label': author, 'value': author } });
 
-  let filteredNews = news.filter((newsItem) => {
+  const filteredNews = news.filter((newsItem) => {
     const categoryMatch = personalisedFilters.category.length === 0 || 
                           personalisedFilters.category.some((item) => newsItem.category === item.value);
     const authorMatch = personalisedFilters.authors.length === 0 || 
@@ -39,14 +39,14 @@ const Personal = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchNews('personal'));
-  }, [personalisedFilters.sources]);
+    dispatch(fetchNews(NEWSFILTERTYPE.PERSONAL));
+  }, [personalisedFilters.sources, dispatch]);
 
-  const handleCategoryChange = (selected: MultiValue<{ value: string, label: string }>) => {
+  const handleCategoryChange = (selected: { value: string, label: string }[]) => {
     dispatch(setPersonalisedFilters({ ...personalisedFilters, category: selected }))
   }
 
-  const handleAuthorChange = (selected: MultiValue<{ value: string, label: string }>) => {
+  const handleAuthorChange = (selected: { value: string, label: string }[]) => {
     dispatch(setPersonalisedFilters({ ...personalisedFilters, authors: selected }))
   }
 
