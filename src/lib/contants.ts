@@ -5,8 +5,8 @@ export const SOURCE_NEWSAPI = 'newsapi' as const;
 export const SOURCE_GUARDIAN = 'guardian' as const;
 
 export const NEWS_SOURCES: NewsSource[] = [
-  { id: SOURCE_NEWSAPI, label: 'News API' },
   { id: SOURCE_GUARDIAN, label: 'Guardian' },
+  { id: SOURCE_NEWSAPI, label: 'News API' },
   { id: SOURCE_NYT, label: 'Newyork Times' },
 ];
 

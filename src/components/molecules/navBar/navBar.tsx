@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Logo from './../../icons/logo';
 
 const NavBar: React.FC = () => (
-  <nav className="bg-white shadow-md">
+  <nav className="bg-[#222] shadow-md">
     <div className="flex flex-wrap items-center justify-between p-4">
       <Link to="/">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">

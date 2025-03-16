@@ -66,7 +66,7 @@ export const getPopularNews = async (params: Params) => {
       .map(result => (result as PromiseFulfilledResult<any>).value);
 
     if (successfulResults.length > 0) {
-      return successfulResults.flat(); // Flatten if multiple results
+      return successfulResults.flat();
     } else {
       return { error: 'All news sources failed to fetch data' };
     }

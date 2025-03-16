@@ -49,7 +49,7 @@ export const fetchNews = createAsyncThunk<
         // If the response contains an error object, reject it
         return thunkAPI.rejectWithValue({ error: response.error });
       }
-      return response as NewsProps[]; // Cast the response to NewsProps[]
+      return response as NewsProps[];
     } catch {
       // If an error occurs during the API request, reject with a custom error message
       return thunkAPI.rejectWithValue({ error: 'Unexpected error occurred while fetching news' });
